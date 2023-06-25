@@ -48,7 +48,11 @@ const boxVarient = {
     visible: {
         x: 0,
         opacity: 1,
-        scale: 1
+        scale: 1,
+        transition: {
+            duration: 1
+        }
+
     },
     exit: {
         x: -500,
@@ -63,6 +67,7 @@ const boxVarient = {
 function App() {
     const [visible, setVisible] = useState(1);
     const nextPlease = () => setVisible(prev => prev === 7 ? 7 : prev + 1)
+    const prevPlease = () => setVisible(prev => prev === 1 ? 1 : prev - 1)
     return (
         <Wrapper>
             <AnimatePresence>
@@ -80,6 +85,7 @@ function App() {
                         : null)
                 }
             </AnimatePresence>
+            <button onClick={prevPlease}>prev</button>
             <button onClick={nextPlease}>next</button>
         </Wrapper>
     );
