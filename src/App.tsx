@@ -9,91 +9,55 @@ const Wrapper = styled(motion.div)`
   justify-content: center;
   align-items: center;
   background: linear-gradient(135deg, rgb(0, 210, 238), rgb(0, 83, 238));
-  flex-direction: column;
 `;
 
-const Svg = styled.svg`
-  width: 100px;
-  height: 100px;
-  color: red;
-  path {
-    stroke: white;
-    stroke-width: 2;
-  }
-`;
 
 const Box = styled(motion.div)`
-  width: 400px;
   height: 200px;
   background-color: rgba(255, 255, 255, 1);
   border-radius: 40px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 20px;
-  position: absolute;
-  top: 100px;
   box-shadow: 0 2px 3px rgba(0, 0, 0, 0.1), 0 10px 20px rgba(0, 0, 0, 0.1);
 `;
 
-const boxVarient = {
-    entry: (back: boolean) => {
-        return {
-            x: back ? -500 : 500,
-                opacity: 0,
-            scale: 0,
-            transition: {
-                duration: 1
-            }
-        }
-    },
-    center: {
-        x: 0,
-        opacity: 1,
-        scale: 1,
-        transition: {
-            duration: 1
-        }
-    },
-    exit: (back: boolean) => {
-        return {
-            x: back ? 500 : -500,
-            opacity: 0,
-            scale: 0,
-            transition: {
-                duration: 1,
-            }
-        }
-    }
-}
+const Grid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  width: 50vw;
+  gap: 10px;
+  div:first-child, div:last-child {
+    grid-column : span 2;
+  }
+`;
+
+const Overlay = styled(motion.div)`
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`
 
 function App() {
-    const [visible, setVisible] = useState(1);
-    const [back, setBack] = useState(false);
-    const nextPlease = () => {
-        setVisible(prev => prev === 10 ? 10 : prev + 1);
-        setBack(false);
-    }
-    const prevPlease = () => {
-        setVisible(prev => prev === 1 ? 1 : prev - 1);
-        setBack(true);
-    }
+    const [clicked, setClicked] = useState(false);
+    const [id, setId] = useState<null | string>(null);
+
     return (
         <Wrapper>
-            <AnimatePresence custom={back}>
-                <Box
-                    custom={back}
-                    key={visible}
-                    variants={boxVarient}
-                    initial="entry"
-                    animate="center"
-                    exit="exit"
-                >
-                    {visible}
-                </Box>
+            <Grid>
+                {["1", "2", "3", "4"].map(n => (
+                    <Box onClick={() => setId(n)} key={n} layoutId={n} />
+                ))}
+            </Grid>
+            <AnimatePresence>
+                {id ? <Overlay
+                    onClick={() => setId(null)}
+                    initial={{ backgroundColor: "rgba(0, 0, 0, 0)" }}
+                    animate={{backgroundColor: "rgba(0, 0, 0, 0.5)" }}
+                    exit={{backgroundColor: "rgba(0, 0, 0, 0)" }}>
+                    <Box style={{width: 400, height: 200}} layoutId={id} />
+                </Overlay> : null}
             </AnimatePresence>
-            <button onClick={prevPlease}>prev</button>
-            <button onClick={nextPlease}>next</button>
         </Wrapper>
     );
 }
